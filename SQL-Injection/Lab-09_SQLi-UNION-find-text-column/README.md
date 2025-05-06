@@ -7,11 +7,11 @@ This lab demonstrates how to identify which column in a SQL `UNION SELECT` query
 
 ## 🧭 Steps
 
-### 1️⃣ Access the Lab
+### 1️⃣ Access the Lab 
 
 Open the lab in your browser and take note of the random string to be retrieved.
 
-📸 `1-access-lab.png`
+📸 `1-access-lab.png` (./1-access-lab.png)
 
 ---
 
@@ -19,7 +19,7 @@ Open the lab in your browser and take note of the random string to be retrieved.
 
 Using Burp Suite, click any category to capture the request. Send the intercepted request to Repeater.
 
-📸 `2-click-category.png`
+📸 `2-click-category.png` (./2-click-category.png)
 
 ---
 
@@ -33,7 +33,7 @@ Send the following payload to determine how many columns the original query retu
 
 If no error is returned and the page loads, it confirms the query has **3 columns**.
 
-📸 `3-check-column-count.png`
+📸 `3-check-column-count.png` (./3-check-column-count.png)
 
 ---
 
@@ -49,7 +49,7 @@ The one that displays the string in the HTML output identifies the string-compat
 
 ✅ In this lab, the **second column** accepts strings.
 
-📸 `4-string-column-found.png`
+📸 `4-string-column-found.png` (./4-string-column-found.png)
 
 ---
 
@@ -57,7 +57,7 @@ The one that displays the string in the HTML output identifies the string-compat
 
 Once the string is visible in the page output, and the lab acknowledges it, the message **“Congratulations, you solved the lab!”** will appear.
 
-📸 `5-lab-solved.png`
+📸 `5-lab-solved.png` (./5-lab-solved.png)
 
 ---
 
